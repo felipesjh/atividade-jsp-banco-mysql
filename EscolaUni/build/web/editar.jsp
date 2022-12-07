@@ -14,10 +14,11 @@
         BancoDeDados bd = new BancoDeDados();
         Aluno aluno = null;
         int ra = 0;
-        aluno = bd.buscar(ra);
                 
+        //Busca os valores
         try{
             ra = Integer.parseInt(request.getParameter("ra"));
+            aluno = bd.buscar(ra);
             if(aluno.getRa() <=0 || aluno==null){
                 response.sendRedirect("./index.jsp");
             }
@@ -25,19 +26,28 @@
             out.println("Erro com RA do formulário"+e);
         }
         
+        
+        //Atualizar no Banco de Dados
         try{
-            
-            aluno = new Aluno();
-            
-            aluno.setRa(ra);
+           String gravar = request.getParameter("nome"); 
+        if(gravar!=null){
+            //aluno = new Aluno();
+         
             aluno.setNome(request.getParameter("nome"));
             aluno.setCpf(request.getParameter("cpf"));
             aluno.setEndereco(request.getParameter("endereco"));
             aluno.setIdade(Integer.parseInt(request.getParameter("idade")));
+            aluno.setRa(ra);
+            
+            out.println(aluno.getNome());
+            out.println(aluno.getCpf());
+            out.println(aluno.getEndereco());
+            out.println(aluno.getIdade());
+            out.println(aluno.getRa());
         
             bd.editar(aluno);
-            response.sendRedirect("./index.jsp");
-            
+            //response.sendRedirect("./index.jsp");
+        }   
         }catch(Exception e){
             out.println("Erro na página de atualizar"+e);
         }
@@ -59,13 +69,6 @@
                     <li class="nav-item">
                       <a class="nav-link" href="./cadastrar.jsp">Cadastrar</a>
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="./editar.jsp">Editar</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="./excluir.jsp">Excluir</a>
-                    </li>
-                  </ul>
             </nav>
         </header>
         
@@ -73,11 +76,16 @@
             
             <h1>Editar Aluno</h1>
             <form method="post" action="./editar.jsp?ra=<%=ra%>">
-                <label>RA:</label><input type="number" name="ra" disabled><br>
-                <label>Nome:</label><input type="text" name="nome" required><br>
-                <label>CPF:</label><input type="text" name="cpf" required><br>
-                <label>Endereço:</label><input type="text" name="endereco" required><br>
-                <label>Idade:</label><input type="text" name="idade" required><br>
+                <label>RA:</label>
+                <input type="number" name="ra" value="<%=aluno.getRa()%>" disabled><br>
+                <label>Nome:</label>
+                <input type="text" name="nome" value="<%=aluno.getNome()%>"  required><br>
+                <label>CPF:</label>
+                <input type="text" name="cpf" value="<%=aluno.getCpf()%>" required><br>
+                <label>Endereço:</label>
+                <input type="text" name="endereco" value="<%=aluno.getEndereco()%>" required><br>
+                <label>Idade:</label>
+                <input type="number" name="idade" value="<%=aluno.getIdade()%>"  required><br>
                 <input type="submit" value="Atualizar">
             </form>
         </main>

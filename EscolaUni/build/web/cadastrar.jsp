@@ -8,7 +8,6 @@
     <% 
         /*Aplicando conexão com Banco de dados e cadastrar*/
         
-        
         try{
         
         /*Verificando se os campos foram preenchidos, 
@@ -57,12 +56,7 @@
                     <li class="nav-item">
                       <a class="nav-link" href="./cadastrar.jsp">Cadastrar</a>
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">Editar</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">Excluir</a>
-                    </li>
+
                   </ul>
             </nav>
         </header>

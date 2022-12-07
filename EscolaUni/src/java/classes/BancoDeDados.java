@@ -32,7 +32,7 @@ public class BancoDeDados {
             
             //utilizar as variéveis de conexão
             conexao = DriverManager.getConnection(urlBanco,usuario,senha);            
-        }catch(Exception e){
+        }catch(SQLException e){
             System.out.println("Erro ao conectar Banco de Dados!" + e);
         }
         
@@ -49,18 +49,18 @@ public class BancoDeDados {
          String sql = "INSERT INTO aluno(nome, cpf, endereco, idade)" 
                  +"VALUES (?, ?, ?, ?)";
          
-         //Verifica o comando sql - Faz segurança
-         PreparedStatement ps = conexao.prepareStatement(sql);
-         
-         //ordem do preenchimento e valor que será utilizado
-         ps.setString(1,aluno.getNome());
-         ps.setString(2,aluno.getCpf());
-         ps.setString(3,aluno.getEndereco());
-         ps.setInt(4,aluno.getIdade());
-                 
-         //Executar o SQL de Inserir
-         ps.execute();
-         ps.close();
+            //ordem do preenchimento e valor que será utilizado
+            try ( //Verifica o comando sql - Faz segurança
+                    PreparedStatement ps = conexao.prepareStatement(sql)) {
+                //ordem do preenchimento e valor que será utilizado
+                ps.setString(1,aluno.getNome());
+                ps.setString(2,aluno.getCpf());
+                ps.setString(3,aluno.getEndereco());
+                ps.setInt(4,aluno.getIdade());
+                
+                //Executar o SQL de Inserir
+                ps.execute();
+            }
         
         }catch(SQLException e){
             System.out.println("Erro ao cadastrar no banco!" + e);
@@ -94,8 +94,8 @@ public class BancoDeDados {
                                     "<td>"+ cpf +"</td>" +
                                     "<td>"+ endereco +"</td>" +
                                     "<td>"+ idade +"</td>" +
-                                    "<td><button>Editar</button></td>" +
-                                    "<td><button>Excluir</button></td>" +
+                                    "<td><a class='btn btn-primary' href='./editar.jsp?ra="+ra+"'>Editar</a></td>" +
+                                    "<td><a class='btn btn-danger' href='./excluir.jsp?ra="+ra+"'>Excluir</a></td>" +
                                "</tr>";
                 
             }
@@ -112,10 +112,9 @@ public class BancoDeDados {
         try{
             Connection conexao = getConexao();
             String sql = "DELETE FROM aluno WHERE ra ="+ ra;
-            PreparedStatement ps = conexao.prepareStatement(sql);
-            
-            ps.execute();
-            ps.close();
+            try (PreparedStatement ps = conexao.prepareStatement(sql)) {
+                ps.execute();
+            }
             
         }catch(SQLException e){
             System.out.println("Erro ao excluir"+e);
@@ -126,22 +125,22 @@ public class BancoDeDados {
         
          try{
             Connection conexao = getConexao();//conexão com o banco de dados
-                String sql = "UPDATE aluno SET"
+                String sql = "UPDATE aluno SET "
                 +"nome = ?,"
                 +"cpf = ?," 
                 +"endereco = ?,"
                 +"idade = ?" 
-                +"WHERE ra = ?;";
-            PreparedStatement ps = conexao.prepareStatement(sql);
-            
-            ps.setString(1,aluno.getNome());
-            ps.setString(2,aluno.getCpf());
-            ps.setString(3,aluno.getEndereco());
-            ps.setInt(4,aluno.getIdade());
-            ps.setInt(5,aluno.getRa());
-            
-            ps.execute();
-            
+                +" WHERE ra = ?";
+             try (PreparedStatement ps = conexao.prepareStatement(sql)) {
+                 ps.setString(1,aluno.getNome());
+                 ps.setString(2,aluno.getCpf());
+                 ps.setString(3,aluno.getEndereco());
+                 ps.setInt(4,aluno.getIdade());
+                 ps.setInt(5,aluno.getRa());
+                 
+                 System.out.println(aluno.getNome());
+                 ps.execute();
+             }
             
          }catch(SQLException e){
             System.out.println("Erro ao Atualizar"+ e);
